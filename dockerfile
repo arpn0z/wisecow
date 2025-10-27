@@ -1,24 +1,16 @@
-FROM ubuntu:20.04
+FROM ubuntu:latest
 
-# Install dependencies
+# Prevent tzdata from prompting for input
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Kolkata
+
 RUN apt-get update && \
-    apt-get install -y fortune-mod cowsay netcat-openbsd nginx openssl && \
+    apt-get install -y tzdata fortune-mod cowsay netcat-openbsd && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy app
+COPY wisecow.sh /app/wisecow.sh
 WORKDIR /app
-COPY wisecow.sh .
-COPY nginx.conf /etc/nginx/nginx.conf
+RUN chmod +x wisecow.sh
 
-# Generate a self-signed TLS certificate
-RUN mkdir -p /etc/nginx/ssl && \
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout /etc/nginx/ssl/server.key \
-    -out /etc/nginx/ssl/server.crt \
-    -subj "/CN=localhost"
-
-# Expose HTTPS port
-EXPOSE 443
-
-# Start both services: Wisecow + NGINX
-CMD bash -c "/app/wisecow.sh & nginx -g 'daemon off;'"
+EXPOSE 4499
+CMD ["bash", "wisecow.sh"]
