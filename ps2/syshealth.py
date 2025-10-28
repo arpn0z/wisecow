@@ -2,21 +2,21 @@ import psutil
 import logging
 from datetime import datetime
 
-# ---------------- CONFIGURATION ----------------
-CPU_THRESHOLD = 80       # percent
-MEMORY_THRESHOLD = 80    # percent
-DISK_THRESHOLD = 90      # percent
+#config
+CPU_THRESHOLD = 80       
+MEMORY_THRESHOLD = 80    
+DISK_THRESHOLD = 90      
 
 LOG_FILE = "system_health.log"
 
-# Configure logging
+# log
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# ---------------- HEALTH CHECK FUNCTIONS ----------------
+# health checker
 def check_cpu():
     cpu_usage = psutil.cpu_percent(interval=1)
     if cpu_usage > CPU_THRESHOLD:
@@ -40,7 +40,7 @@ def check_processes():
     logging.info(f"Running processes count: {running_processes}")
     return running_processes
 
-# ---------------- MAIN FUNCTION ----------------
+
 def main():
     cpu = check_cpu()
     memory = check_memory()
@@ -56,6 +56,6 @@ def main():
 
     logging.info(f"CPU: {cpu}%, Memory: {memory}%, Disk: {disk}%, Processes: {processes}")
 
-# ---------------- ENTRY POINT ----------------
+
 if __name__ == "__main__":
     main()
